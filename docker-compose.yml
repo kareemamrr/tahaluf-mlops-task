@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  rtsp-server:
+    image: bluenviron/mediamtx:latest-ffmpeg
+    ports:
+      - "8554:8554"
+
+  ffmpeg-streamer:
+    build: ./ffmpeg-streamer
+    depends_on:
+      - rtsp-server
+    volumes:
+     - ./:/data
+    
+    command: ffmpeg -re -stream_loop -1 -i /data/people.mp4 -f rtsp -rtsp_transport tcp rtsp://rtsp-server:8554/videostream
+  
+  flask-app:
+    build: ./flask-app
+    depends_on:
+      - ffmpeg-streamer
+    ports: 
+      - "5000:5000"
+    environment:
+      - OUTPUT_DIR='./output'
+    volumes:
+      - ./output:/images
