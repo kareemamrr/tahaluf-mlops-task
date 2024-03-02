@@ -23,7 +23,7 @@ def draw_bboxes(img, bboxes):
     return img
 
 def write_inference(img):
-    timestamp_str = datetime.now().strftime("%M%S")
+    timestamp_str = datetime.now().strftime("%H%M%S")
     output_filename = f'image-{timestamp_str}.jpg'
     output_path = os.path.join('images', output_filename)
     cv2.imwrite(output_path, img) 
